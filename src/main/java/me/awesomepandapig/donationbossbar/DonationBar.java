@@ -11,6 +11,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -84,7 +85,7 @@ public final class DonationBar {
         this.bar.addPlayer(player);
     }
 
-    public @NotNull BossBar getBossBar() {
+    public @Nullable BossBar getBossBar() {
         return this.bar;
     }
 

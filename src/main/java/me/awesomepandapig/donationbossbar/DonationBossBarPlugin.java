@@ -2,6 +2,7 @@ package me.awesomepandapig.donationbossbar;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.boss.BossBar;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
@@ -51,7 +52,8 @@ public final class DonationBossBarPlugin extends JavaPlugin {
         }
 
         // remove all players from the boss bar and cancel the task
-        this.donationBar.getBossBar().removeAll();
+        BossBar bossBar = this.donationBar.getBossBar();
+        if (bossBar != null) bossBar.removeAll(); // if the boss bar is null, then it hasn't been created yet
         this.donationBar.attemptToCancel();
 
         // get the config values
