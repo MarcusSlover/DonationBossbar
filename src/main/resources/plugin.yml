@@ -1,7 +1,7 @@
 name: DonationBossbar
 version: ${project.version}
 main: me.awesomepandapig.donationbossbar.DonationBossBarPlugin
-api-version: 1.18
+api-version: 1.19
 authors: [ awesomepandapig, MarcusSlover ]
 commands:
   donationbb:

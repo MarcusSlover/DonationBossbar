@@ -23,27 +23,38 @@ public final class DonationBossBarPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
+        this.createBossBar(); // create the boss bar before registering the event listener
+
         this.getServer().getPluginManager().registerEvents(new Listener() {
             @EventHandler
             public void onJoin(PlayerJoinEvent event) {
-                if (!donationBar.getBossBar().getPlayers().contains(event.getPlayer())) {
-                    donationBar.addPlayer(event.getPlayer());
+                if (!DonationBossBarPlugin.this.donationBar.getBossBar().getPlayers().contains(event.getPlayer())) {
+                    DonationBossBarPlugin.this.donationBar.addPlayer(event.getPlayer());
                 }
             }
         }, this);
-        this.createBossBar();
     }
 
     @Override
     public void onDisable() {
+        if (this.donationBar == null) {
+            return; // if donation bar is null, then it hasn't been created yet
+        }
         this.donationBar.getBossBar().removeAll();
     }
 
     public void createBossBar() {
         this.reloadConfig();
-        donationBar.getBossBar().removeAll();
-        donationBar.attemptToCancel();
 
+        if (this.donationBar == null) { // if null then create a new instance
+            this.donationBar = new DonationBar();
+        }
+
+        // remove all players from the boss bar and cancel the task
+        this.donationBar.getBossBar().removeAll();
+        this.donationBar.attemptToCancel();
+
+        // get the config values
         String token = this.getConfig().getString("access-token");
         String id = this.getConfig().getString("campaign-id");
         String mainTitleColor = this.getConfig().getString("main-title-color");
@@ -52,11 +63,18 @@ public final class DonationBossBarPlugin extends JavaPlugin {
         String goalTitleColor = this.getConfig().getString("goal-title-color");
         String goalBarColor = this.getConfig().getString("goal-bar-color");
 
-        donationBar = new DonationBar();
-        donationBar.createBar(token, id, mainTitleColor, mainBarColor, goalMsg, goalTitleColor, goalBarColor);
-        Bukkit.getOnlinePlayers().forEach(donationBar::addPlayer);
+        // create the boss bar
+        this.donationBar = new DonationBar();
+        this.donationBar.createBar(token, id, mainTitleColor, mainBarColor, goalMsg, goalTitleColor, goalBarColor);
+
+        // add all online players to the boss bar
+        Bukkit.getOnlinePlayers().forEach(this.donationBar::addPlayer);
     }
 
+    /**
+     * The donation boss bar command.
+     */
+    @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, String label, String[] args) {
         if (label.equalsIgnoreCase("donationbb")) {
             if (!sender.hasPermission("donationbb")) {
@@ -71,7 +89,7 @@ public final class DonationBossBarPlugin extends JavaPlugin {
 
             if (args[0].equalsIgnoreCase("reload")) {
                 sender.sendMessage(colorize("&aReloaded Donation Bossbar&r"));
-                createBossBar();
+                this.createBossBar();
             }
         }
         return false;

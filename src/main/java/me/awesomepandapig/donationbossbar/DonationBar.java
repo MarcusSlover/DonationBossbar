@@ -30,12 +30,12 @@ public final class DonationBar {
     }
 
     public void createBar(String token, String id, String mainTitleColor, String mainBarColor, String goalMsg, String goalTitleColor, String goalBarColor) {
-        bar = Bukkit.createBossBar(colorize("&cWelcome to Donation Bossbar"), BarColor.PINK, BarStyle.SOLID);
-        bar.setVisible(true);
+        this.bar = Bukkit.createBossBar(colorize("&cWelcome to Donation Bossbar"), BarColor.PINK, BarStyle.SOLID);
+        this.bar.setVisible(true);
 
-        bukkitTask = Bukkit.getScheduler().runTaskTimerAsynchronously(DonationBossBarPlugin.getInstance(), () -> {
+        this.bukkitTask = Bukkit.getScheduler().runTaskTimerAsynchronously(DonationBossBarPlugin.getInstance(), () -> {
             try {
-                final JsonObject jsonObject = requestJson(id, token);
+                final JsonObject jsonObject = this.requestJson(id, token);
                 Bukkit.getScheduler().runTask(DonationBossBarPlugin.getInstance(), () -> {
 
                     JsonObject data = jsonObject.get("data").getAsJsonObject();
@@ -44,13 +44,13 @@ public final class DonationBar {
                     double progress = totalAmountRaised / fundraiserGoalAmount;
                     if (progress >= 1) {
                         // the goal has been reached
-                        bar.setProgress(1);
-                        bar.setColor(BarColor.valueOf(goalBarColor));
-                        bar.setTitle(colorize(goalTitleColor + goalMsg));
+                        this.bar.setProgress(1);
+                        this.bar.setColor(BarColor.valueOf(goalBarColor));
+                        this.bar.setTitle(colorize(goalTitleColor + goalMsg));
                     } else {
-                        bar.setProgress(progress);
-                        bar.setColor(BarColor.valueOf(mainBarColor));
-                        bar.setTitle(colorize(mainTitleColor + "Raised $" + formatNumber(totalAmountRaised) + " of $" + formatNumber(fundraiserGoalAmount)));
+                        this.bar.setProgress(progress);
+                        this.bar.setColor(BarColor.valueOf(mainBarColor));
+                        this.bar.setTitle(colorize(mainTitleColor + "Raised $" + this.formatNumber(totalAmountRaised) + " of $" + this.formatNumber(fundraiserGoalAmount)));
                     }
 
                 });
@@ -81,16 +81,16 @@ public final class DonationBar {
     }
 
     public void addPlayer(Player player) {
-        bar.addPlayer(player);
+        this.bar.addPlayer(player);
     }
 
     public @NotNull BossBar getBossBar() {
-        return bar;
+        return this.bar;
     }
 
     public void attemptToCancel() {
-        if (bukkitTask == null) return;
-        if (bukkitTask.isCancelled()) return;
-        bukkitTask.cancel();
+        if (this.bukkitTask == null) return;
+        if (this.bukkitTask.isCancelled()) return;
+        this.bukkitTask.cancel();
     }
 }
